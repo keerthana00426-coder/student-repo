@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5fb;--card:#fff;--tx:#1d2136;--mu:#586080;--bd:#e3e7f2;--pr:#4f46e5;--pr2:#e4e7ff;--ac:#0d9488;--wa:#b45309;--da:#c62828;--ok:#047857;--sh:0 2px 12px rgba(29,33,54,.07)}
+[data-theme=dark]{--bg:#0e1120;--card:#181c31;--tx:#eef0fb;--mu:#a5acc9;--bd:#2b3050;--pr:#9a9bfa;--pr2:#272a52;--ac:#2dd4bf;--wa:#fbbf24;--da:#fca5a5;--ok:#34d399;--sh:0 2px 12px rgba(0,0,0,.45)}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--pr);outline-offset:2px}
+.side{position:fixed;inset:0 auto 0 0;width:220px;background:var(--card);border-right:1px solid var(--bd);padding:20px 12px;display:flex;flex-direction:column;gap:4px;z-index:20}
+.logo{font-weight:700;font-size:1.15rem;padding:4px 12px 16px;color:var(--pr)}
+.nav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:0;background:none;color:var(--mu);text-align:left;font-weight:500;transition:.2s}
+.nav:hover{background:var(--pr2);color:var(--tx)}
+.nav[aria-current=page]{background:var(--pr);color:#fff}
+.main{margin-left:220px}
+.top{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--bd)}
+.search{flex:1;max-width:380px;padding:9px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}
+.sp{flex:1}
+.ib{position:relative;border:1px solid var(--bd);background:var(--bg);border-radius:10px;width:40px;height:40px}
+.badge{position:absolute;top:-6px;right:-6px;background:var(--da);color:#fff;border-radius:99px;font-size:.7rem;min-width:18px;padding:0 5px;font-weight:700}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--pr),var(--ac));color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.av.big{width:84px;height:84px;font-size:1.8rem}
+.who{display:flex;align-items:center;gap:10px;font-weight:600;font-size:.9rem}
+.content{padding:24px;max-width:1200px}
+h2{font-size:1.4rem;margin-bottom:16px}
+h3{font-size:1rem;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;min-width:0}
+.card:hover{transform:translateY(-2px)}
+.wide{grid-column:1/-1}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.chip{background:var(--pr2);color:var(--pr);border-radius:99px;padding:4px 12px;font-size:.85rem;font-weight:600}
+.mu{color:var(--mu);font-size:.88rem}
+.pf{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.9rem}
+.kv dt{color:var(--mu)}.kv dd{margin:0}
+.bar{height:9px;border-radius:9px;background:var(--bd);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:var(--ac)}
+.low .bar i{background:var(--da)}
+.low .warn{color:var(--da);font-weight:600;font-size:.82rem}
+.sb{margin-bottom:14px}.sb .row{justify-content:space-between;gap:6px;font-size:.9rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:9px 8px;border-bottom:1px solid var(--bd);text-align:center}
+th:first-child,td:first-child{text-align:left}
+.scroll{overflow-x:auto}
+select{padding:7px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--card)}
+.tt th,.tt td{border:1px solid var(--bd);padding:8px 4px;font-size:.8rem}
+.tt .today{box-shadow:inset 0 0 0 2px var(--pr)}
+.tt td span{display:block;border-radius:8px;padding:5px 3px;font-weight:600;color:#12141f}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:.8rem}
+.cal b{color:var(--mu);font-weight:500}
+.cal div{padding:6px 0;border-radius:8px}
+.p{background:var(--pr2);color:var(--ok)}.a{background:var(--da);color:#fff}.off{color:var(--mu);opacity:.6}
+.next{font-size:1.9rem;font-weight:700;color:var(--pr)}
+.btn{border:1px solid var(--pr);background:none;color:var(--pr);border-radius:9px;padding:6px 12px;font-weight:600;transition:.2s}
+.btn:hover{background:var(--pr);color:#fff}
+.n{display:flex;gap:12px;padding:12px;border-radius:12px;border:1px solid var(--bd);margin-bottom:8px;align-items:flex-start}
+.n.unread{background:var(--pr2);border-left:4px solid var(--pr);font-weight:600}
+.n .ic{font-size:1.3rem}
+.tag{background:var(--wa);color:#fff;border-radius:6px;padding:1px 8px;font-size:.75rem;font-weight:700}
+.nav .l{display:inline}
+@media(max-width:768px){
+.side{inset:auto 0 0 0;width:auto;flex-direction:row;overflow-x:auto;padding:6px;border:0;border-top:1px solid var(--bd);gap:2px}
+.logo{display:none}
+.nav{flex-direction:column;gap:0;padding:6px 10px;font-size:.7rem;text-align:center}
+.main{margin-left:0;padding-bottom:76px}
+.top{padding:10px 12px}.who span{display:none}.content{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="side" id="side" aria-label="Main navigation"><div class="logo">🎓 CampusHub</div></nav>
+<div class="main">
+ <header class="top">
+  <input class="search" id="q" type="search" placeholder="Search subjects, notifications, announcements…" aria-label="Search">
+  <div class="sp"></div>
+  <button class="ib" id="theme" aria-label="Toggle dark mode">🌙</button>
+  <button class="ib" id="bell" aria-label="Notifications">🔔<span class="badge" id="badge">0</span></button>
+  <div class="who"><div class="av" aria-hidden="true">AR</div><span id="nm"></span></div>
+ </header>
+ <main class="content" id="view" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<script>
+/* ============ 1. DATA (replace with fetch() calls to your backend) ============ */
+const DATA = {
+  student:{name:"Aarav Reddy",roll:"21CS1042",dept:"Computer Science & Engineering",year:"2nd Year · Semester 4",email:"aarav.reddy@college.edu",phone:"+91 98765 43210",mentor:"Dr. Meera Nair",cgpa:8.62,gpa:8.85},
+  subjects:[
+    {code:"CS401",name:"Operating Systems",credits:4,faculty:"Dr. K. Rao",progress:72,att:[34,40],color:"#a5b4fc"},
+    {code:"CS402",name:"Computer Networks",credits:3,faculty:"Prof. S. Iyer",progress:65,att:[27,40],color:"#5eead4"},
+    {code:"CS403",name:"Design & Analysis of Algorithms",credits:4,faculty:"Dr. P. Menon",progress:80,att:[37,42],color:"#fcd34d"},
+    {code:"MA401",name:"Probability & Statistics",credits:3,faculty:"Prof. R. Das",progress:58,att:[25,36],color:"#fda4af"},
+    {code:"CS404",name:"Software Engineering",credits:3,faculty:"Ms. L. Fernandes",progress:70,att:[30,34],color:"#86efac"},
+    {code:"HS401",name:"Professional Communication",credits:2,faculty:"Mr. T. Joseph",progress:85,att:[22,24],color:"#f0abfc"}
+  ],
+  // marks per semester: [subject, internal1 /20, internal2 /20, assignment /10, final /50]
+  marks:{
+    4:[["Operating Systems",17,18,9,41],["Computer Networks",14,15,8,33],["Design & Analysis of Algorithms",18,19,10,44],["Probability & Statistics",13,12,7,30],["Software Engineering",16,17,9,39],["Professional Communication",18,17,10,42]],
+    3:[["Data Structures",18,17,9,43],["Digital Logic",15,16,8,36],["Discrete Mathematics",14,13,8,34],["OOP with Java",19,18,10,45],["Database Systems",17,16,9,40],["Environmental Science",16,17,9,38]]
+  },
+  // timetable: day -> subject codes for slots 9,10,11,14,15 (lunch 12–14)
+  timetable:{Mon:["CS401","CS402","CS403","MA401","CS404"],Tue:["CS403","CS401","HS401","CS402","MA401"],Wed:["CS404","CS403","CS401","HS401","CS402"],Thu:["MA401","CS404","CS402","CS403","CS401"],Fri:["CS402","MA401","CS404","CS401","HS401"],Sat:["CS403","HS401","MA401","CS404","CS402"]},
+  notifications:[
+    {id:1,type:"assignment",title:"OS assignment 3 due tomorrow, 11:59 PM",time:"2 hours ago",read:false},
+    {id:2,type:"exam",title:"Internal 2 for Computer Networks on 28 Nov",time:"5 hours ago",read:false},
+    {id:3,type:"fee",title:"Semester fee payment window closes 30 Nov",time:"Yesterday",read:false},
+    {id:4,type:"event",title:"Tech fest registrations are now open",time:"Yesterday",read:true},
+    {id:5,type:"assignment",title:"Algorithms problem set 5 has been posted",time:"2 days ago",read:false},
+    {id:6,type:"exam",title:"Hall tickets available for download",time:"3 days ago",read:true},
+    {id:7,type:"event",title:"Guest lecture on cloud careers, Friday 3 PM",time:"4 days ago",read:true},
+    {id:8,type:"fee",title:"Library fine of ₹40 pending",time:"5 days ago",read:false}
+  ],
+  announcements:[
+    {id:1,title:"End-semester exam timetable released",date:"22 Nov 2026",by:"Examination Cell",pinned:true,body:"The end-semester examinations begin on 14 December. The detailed timetable is available on the exam portal. Students must carry their ID card and hall ticket to every exam. Report 20 minutes before the start time."},
+    {id:2,title:"Attendance shortage list published",date:"20 Nov 2026",by:"CSE Department",pinned:true,body:"Students below 75% attendance must meet their mentor before 28 November. Medical certificates can be submitted to the department office for condonation."},
+    {id:3,title:"Annual sports day on 5 December",date:"18 Nov 2026",by:"Sports Committee",pinned:false,body:"Register with your class representative for track, field and indoor events. Practice sessions run daily from 5 PM at the main ground."},
+    {id:4,title:"Campus placement drive: Infosys and TCS",date:"15 Nov 2026",by:"Placement Cell",pinned:false,body:"Eligible final-year students should upload updated resumes to the placement portal by 25 November. Pre-placement talks will be held in the main auditorium."},
+    {id:5,title:"Library open until 10 PM during exams",date:"12 Nov 2026",by:"Central Library",pinned:false,body:"Extended hours begin 1 December. Bring your ID card. Group study rooms can be booked at the front desk."}
+  ]
+};
+const TYPES={assignment:"📝",exam:"📅",fee:"💳",event:"🎉"};
+const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const SLOTS=[9,10,11,14,15];
+const VIEWS=[["dashboard","🏠","Dashboard"],["profile","👤","Profile"],["attendance","✅","Attendance"],["marks","📊","Marks"],["timetable","🗓️","Timetable"],["subjects","📚","Subjects"],["notifications","🔔","Notifications"],["announcements","📢","Announcements"]];
+
+/* ============ 2. STATE & HELPERS ============ */
+const S={view:"dashboard",sem:4,filter:"all",q:"",open:{},theme:"light"};
+const $=s=>document.querySelector(s);
+const sub=c=>DATA.subjects.find(x=>x.code===c);
+const pct=(a,t)=>Math.round(a/t*100);
+const need=(a,t)=>Math.max(0,Math.ceil(3*t-4*a)); // classes needed in a row to reach 75%
+const match=s=>!S.q||s.toLowerCase().includes(S.q);
+const grade=p=>p>=90?"O":p>=80?"A+":p>=70?"A":p>=60?"B+":p>=50?"B":p>=40?"C":"F";
+const unread=()=>DATA.notifications.filter(n=>!n.read).length;
+const overall=()=>{const a=DATA.subjects.reduce((s,x)=>s+x.att[0],0),t=DATA.subjects.reduce((s,x)=>s+x.att[1],0);return pct(a,t)};
+
+/* ============ 3. COMPONENTS (return HTML strings) ============ */
+const profile=()=>{const s=DATA.student;return `<article class="card wide"><div class="pf"><div class="av big" aria-hidden="true">AR</div><div>
+<h3 style="font-size:1.3rem;margin:0">${s.name}</h3>
+<div class="row" style="margin:8px 0"><span class="chip">CGPA ${s.cgpa}</span><span class="chip">Sem GPA ${s.gpa}</span></div>
+<dl class="kv"><dt>Roll no.</dt><dd>${s.roll}</dd><dt>Department</dt><dd>${s.dept}</dd><dt>Year</dt><dd>${s.year}</dd><dt>Email</dt><dd>${s.email}</dd><dt>Phone</dt><dd>${s.phone}</dd><dt>Mentor</dt><dd>${s.mentor}</dd></dl></div></div></article>`};
+
+const ring=p=>{const c=2*Math.PI*52,col=p<75?"var(--da)":"var(--ac)";return `<svg viewBox="0 0 130 130" width="130" height="130" role="img" aria-label="Overall attendance ${p} percent"><circle cx="65" cy="65" r="52" fill="none" stroke="var(--bd)" stroke-width="12"/><circle cx="65" cy="65" r="52" fill="none" stroke="${col}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 65 65)"/><text x="65" y="72" text-anchor="middle" font-size="24" font-weight="700" fill="var(--tx)">${p}%</text></svg>`};
+const ringCard=()=>{const low=DATA.subjects.filter(s=>pct(...s.att)<75).length;return `<article class="card"><h3>Overall attendance</h3><div class="row">${ring(overall())}<p class="mu">${low?`${low} subject${low>1?"s are":" is"} below 75%.`:"All subjects are above 75%."}</p></div></article>`};
+
+const bars=()=>`<article class="card"><h3>Subject-wise attendance</h3>${DATA.subjects.map(s=>{const p=pct(...s.att),n=need(...s.att);return `<div class="sb ${p<75?"low":""}"><div class="row"><span>${s.name}</span><b>${p}% <span class="mu">(${s.att[0]}/${s.att[1]})</span></b></div><div class="bar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="${s.name} attendance"><i style="width:${p}%"></i></div>${p<75?`<div class="warn">⚠ Need ${n} more class${n>1?"es":""} to reach 75%</div>`:""}</div>`}).join("")}</article>`;
+
+const calendar=()=>{const d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+ // sample statuses; replace with daily attendance records from your API
+ let h=DAYS.map(x=>`<b>${x[0]}</b>`).join("")+"<span></span>".repeat(first);
+ for(let i=1;i<=days;i++){const wd=new Date(y,m,i).getDay();let c="",l="Upcoming";
+  if(wd===0){c="off";l="Holiday"}else if(i<=d.getDate()){const ab=(i*7+3)%9===0;c=ab?"a":"p";l=ab?"Absent":"Present"}
+  h+=`<div class="${c}" title="${i}: ${l}" aria-label="${i}: ${l}">${i}</div>`}
+ return `<article class="card"><h3>${d.toLocaleString("default",{month:"long"})} calendar</h3><div class="cal">${h}</div><p class="mu" style="margin-top:8px">Green: present · Red: absent · Faded: holiday</p></article>`};
+
+const chart=rows=>{const W=600,H=230,bw=44,g=(W-40)/rows.length;
+ let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Total marks by subject">`;
+ [0,50,100].forEach(v=>{const y=190-v*1.6;s+=`<line x1="30" x2="${W}" y1="${y}" y2="${y}" stroke="var(--bd)"/><text x="26" y="${y+4}" text-anchor="end" font-size="10" fill="var(--mu)">${v}</text>`});
+ rows.forEach((r,i)=>{const t=r[1]+r[2]+r[3]+r[4],x=40+i*g+(g-bw)/2,h=t*1.6;
+  s+=`<rect x="${x}" y="${190-h}" width="${bw}" height="${h}" rx="6" fill="${t<50?"var(--da)":"var(--pr)"}"><title>${r[0]}: ${t}/100</title></rect><text x="${x+bw/2}" y="${184-h}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--tx)">${t}</text><text x="${x+bw/2}" y="208" text-anchor="middle" font-size="10" fill="var(--mu)">${r[0].split(" ").map(w=>w[0]).join("").slice(0,4)}</text>`});
+ return s+"</svg>"};
+const marksChartCard=()=>`<article class="card wide"><h3>Marks comparison (Sem ${S.sem})</h3>${chart(DATA.marks[S.sem])}</article>`;
+
+const marksTable=()=>{const rows=DATA.marks[S.sem];return `<article class="card wide"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">Results</h3><label>Semester <select id="sem" aria-label="Select semester">${Object.keys(DATA.marks).sort().map(k=>`<option value="${k}" ${+k===S.sem?"selected":""}>Semester ${k}</option>`).join("")}</select></label></div>
+<div class="scroll"><table><thead><tr><th>Subject</th><th>Internal 1 /20</th><th>Internal 2 /20</th><th>Assignment /10</th><th>Final /50</th><th>Total</th><th>Grade</th></tr></thead><tbody>${rows.map(r=>{const t=r[1]+r[2]+r[3]+r[4];return `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td><b>${t}</b></td><td><span class="chip">${grade(t)}</span></td></tr>`}).join("")}</tbody></table></div></article>`};
+
+// finds the next upcoming class (skips Sundays); returns {code, when: Date}
+function nextClass(){const now=new Date();for(let o=0;o<8;o++){const d=new Date(now);d.setDate(now.getDate()+o);const day=DAYS[d.getDay()],row=DATA.timetable[day];if(!row)continue;
+  for(let i=0;i<SLOTS.length;i++){const t=new Date(d);t.setHours(SLOTS[i],0,0,0);if(t>now)return{code:row[i],when:t,day}}}}
+const nextCard=()=>{const n=nextClass(),s=sub(n.code);return `<article class="card"><h3>Next class</h3><p><b>${s.name}</b></p><p class="mu">${n.day}, ${n.when.getHours()}:00 · ${s.faculty}</p><p class="next" id="cd" aria-live="off">--:--:--</p></article>`};
+function tick(){const el=$("#cd");if(!el)return;const n=nextClass();let t=Math.max(0,Math.floor((n.when-new Date())/1000));const p=v=>String(v).padStart(2,"0");el.textContent=`${p(Math.floor(t/3600))}:${p(Math.floor(t%3600/60))}:${p(t%60)}`}
+
+const ttGrid=()=>{const today=DAYS[new Date().getDay()],ds=Object.keys(DATA.timetable);
+ const cell=(d,c)=>`<td class="${d===today?"today":""}"><span style="background:${sub(c).color}">${c}</span></td>`;
+ let rows="";SLOTS.forEach((h,i)=>{if(i===3)rows+=`<tr><th scope="row">12:00–14:00</th><td colspan="6" class="mu">Lunch break</td></tr>`;rows+=`<tr><th scope="row">${h}:00–${h+1}:00</th>${ds.map(d=>cell(d,DATA.timetable[d][i])).join("")}</tr>`});
+ return `<article class="card wide"><h3>Weekly timetable</h3><div class="scroll"><table class="tt"><thead><tr><th>Time</th>${ds.map(d=>`<th class="${d===today?"today":""}">${d}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div></article>`};
+
+const subjects=()=>DATA.subjects.filter(s=>match(s.name+s.code+s.faculty)).map(s=>`<article class="card"><div class="row" style="justify-content:space-between"><span class="chip">${s.code}</span><span class="mu">${s.credits} credits</span></div><h3 style="margin:10px 0 2px">${s.name}</h3><p class="mu">${s.faculty}</p><p class="mu" style="margin-top:10px">Syllabus ${s.progress}%</p><div class="bar" role="progressbar" aria-valuenow="${s.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${s.name} syllabus progress"><i style="width:${s.progress}%;background:var(--pr)"></i></div><button class="btn" style="margin-top:12px" data-act="detail" data-id="${s.code}">View details</button></article>`).join("")||`<p class="mu">No subjects match your search.</p>`;
+
+const notif=(list,tools)=>`<article class="card wide">${tools?`<div class="row" style="justify-content:space-between;margin-bottom:12px"><label>Filter <select id="flt" aria-label="Filter by type"><option value="all">All types</option>${Object.keys(TYPES).map(t=>`<option value="${t}" ${S.filter===t?"selected":""}>${t[0].toUpperCase()+t.slice(1)}</option>`).join("")}</select></label><button class="btn" data-act="readall">Mark all as read</button></div>`:`<h3>Recent notifications</h3>`}
+${list.map(n=>`<div class="n ${n.read?"":"unread"}"><span class="ic" aria-hidden="true">${TYPES[n.type]}</span><div style="flex:1"><div>${n.title}</div><div class="mu">${n.type} · ${n.time}${n.read?"":" · unread"}</div></div>${n.read?"":`<button class="btn" data-act="read" data-id="${n.id}">Mark as read</button>`}</div>`).join("")||`<p class="mu">Nothing to show.</p>`}</article>`;
+const notifList=()=>DATA.notifications.filter(n=>(S.filter==="all"||n.type===S.filter)&&match(n.title));
+
+const ann=(list)=>list.map(a=>{const o=S.open[a.id];return `<article class="card wide"><div class="row"><h3 style="margin:0">${a.title}</h3>${a.pinned?`<span class="tag">📌 Pinned</span>`:""}</div><p class="mu">${a.date} · Posted by ${a.by}</p><p style="margin:8px 0">${o?a.body:a.body.slice(0,100)+"…"}</p><button class="btn" data-act="more" data-id="${a.id}" aria-expanded="${!!o}">${o?"Show less":"Read more"}</button></article>`}).join("")||`<p class="mu">No announcements match your search.</p>`;
+const annList=()=>DATA.announcements.filter(a=>match(a.title+a.body+a.by)).sort((a,b)=>b.pinned-a.pinned);
+
+/* ============ 4. VIEWS & ROUTER ============ */
+const VIEW={
+ dashboard:()=>`<h2>Welcome back, ${DATA.student.name.split(" ")[0]}</h2><div class="grid">${profile()}${ringCard()}${nextCard()}${notif(notifList().filter(n=>!n.read).slice(0,3),false)}${ann(annList().slice(0,1))}${marksChartCard()}</div>`,
+ profile:()=>`<h2>Profile</h2><div class="grid">${profile()}</div>`,
+ attendance:()=>`<h2>Attendance</h2><div class="grid">${ringCard()}${calendar()}${bars()}</div>`,
+ marks:()=>`<h2>Marks &amp; results</h2><div class="grid">${marksTable()}${marksChartCard()}</div>`,
+ timetable:()=>`<h2>Timetable</h2><div class="grid">${nextCard()}${ttGrid()}</div>`,
+ subjects:()=>`<h2>Subjects</h2><div class="grid">${subjects()}</div>`,
+ notifications:()=>`<h2>Notifications</h2><div class="grid">${notif(notifList(),true)}</div>`,
+ announcements:()=>`<h2>Announcements</h2><div class="grid">${ann(annList())}</div>`
+};
+function render(){
+ $("#view").innerHTML=VIEW[S.view]();
+ document.querySelectorAll(".nav").forEach(b=>b.toggleAttribute("aria-current",b.dataset.v===S.view)||b.removeAttribute("aria-current"));
+ document.querySelectorAll(".nav").forEach(b=>{if(b.dataset.v===S.view)b.setAttribute("aria-current","page")});
+ const u=unread();$("#badge").textContent=u;$("#badge").hidden=!u;$("#bell").setAttribute("aria-label",`Notifications, ${u} unread`);
+ tick();
+}
+function go(v){S.view=v;history.replaceState(null,"","#"+v);render();window.scrollTo({top:0,behavior:"smooth"})}
+
+/* ============ 5. EVENTS ============ */
+$("#side").insertAdjacentHTML("beforeend",VIEWS.map(v=>`<button class="nav" data-v="${v[0]}"><span aria-hidden="true">${v[1]}</span><span class="l">${v[2]}</span></button>`).join(""));
+$("#side").addEventListener("click",e=>{const b=e.target.closest(".nav");if(b)go(b.dataset.v)});
+$("#bell").onclick=()=>go("notifications");
+$("#q").oninput=e=>{S.q=e.target.value.trim().toLowerCase();render()};
+$("#view").addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const id=+b.dataset.id,a=b.dataset.act;
+ if(a==="read")DATA.notifications.find(n=>n.id===id).read=true;
+ if(a==="readall")DATA.notifications.forEach(n=>n.read=true);
+ if(a==="more")S.open[id]=!S.open[id];
+ if(a==="detail"){const s=sub(b.dataset.id);alert(`${s.code} – ${s.name}\nFaculty: ${s.faculty}\nCredits: ${s.credits}\nSyllabus covered: ${s.progress}%\nAttendance: ${pct(...s.att)}%`);return}
+ render()});
+$("#view").addEventListener("change",e=>{if(e.target.id==="sem")S.sem=+e.target.value;if(e.target.id==="flt")S.filter=e.target.value;render()});
+
+// theme: kept in memory (S.theme); also saved to localStorage when the browser allows it
+function setTheme(t){S.theme=t;document.documentElement.dataset.theme=t;$("#theme").textContent=t==="dark"?"☀️":"🌙";try{localStorage.setItem("theme",t)}catch(_){}}
+$("#theme").onclick=()=>setTheme(S.theme==="dark"?"light":"dark");
+
+/* ============ 6. INIT ============ */
+$("#nm").textContent=DATA.student.name;
+let saved=null;try{saved=localStorage.getItem("theme")}catch(_){}
+setTheme(saved||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+const h=location.hash.slice(1);if(VIEW[h])S.view=h;
+render();setInterval(tick,1000);
+</script>
+</body>
+</html>
