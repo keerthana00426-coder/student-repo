@@ -1,4 +1,6 @@
 # student-repo
+student name: keerthana, roll no:N26V01A0164,SEC -2
+Deploy link:https://lighthearted-gaufre-f95c02.netlify.app/
 # 🎓 CampusHub – Student Dashboard
 
 ## 📌 Project Overview
